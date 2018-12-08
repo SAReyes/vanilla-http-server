@@ -1,6 +1,7 @@
 package org.example.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Product {
     private long id;
@@ -34,6 +35,21 @@ public class Product {
 
     public List<Category> getCategories() {
         return categories;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(name, product.name) &&
+                Objects.equals(departments, product.departments) &&
+                Objects.equals(categories, product.categories);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, departments, categories);
     }
 
     public void setCategories(List<Category> categories) {
