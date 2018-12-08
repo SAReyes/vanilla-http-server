@@ -1,37 +1,39 @@
 {
+  "departments": [
+    {
+      "id": 1,
+      "name": "grocery"
+    },
+    {
+      "id": 2,
+      "name": "greengrocery"
+    },
+    {
+      "id": 3,
+      "name": "beauty"
+    }
+  ],
   "products": [
     {
       "id": 1,
       "name": "apple",
       "departments": [
-        {
-          "id": 1,
-          "name": "grocery"
-        },
-        {
-          "id": 2,
-          "name": "greengrocery"
-        }
+        1,
+        2
       ]
     },
     {
       "id": 2,
       "name": "banana",
       "departments": [
-        {
-          "id": 1,
-          "name": "grocery"
-        }
+        1
       ]
     },
     {
       "id": 3,
       "name": "shampoo",
       "departments": [
-        {
-          "id": 3,
-          "name": "beauty"
-        }
+        3
       ]
     }
   ]

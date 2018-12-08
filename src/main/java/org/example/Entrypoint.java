@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.domain.Department;
 import org.example.domain.Product;
 import org.example.handler.ProductHandler;
+import org.example.mapper.ProductMapper;
+import org.example.repository.DepartmentRepository;
 import org.example.repository.ProductRepository;
 import org.example.server.RestServer;
 
@@ -18,7 +21,9 @@ public class Entrypoint {
 
     public static void main(String[] args) throws IOException {
         ProductRepository productRepository = new ProductRepository(new ArrayList<>());
-        ProductHandler productHandler = new ProductHandler(productRepository);
+        DepartmentRepository departmentRepository = new DepartmentRepository(new ArrayList<>());
+        ProductMapper productMapper = new ProductMapper(departmentRepository);
+        ProductHandler productHandler = new ProductHandler(productRepository, departmentRepository, productMapper);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -28,6 +33,13 @@ public class Entrypoint {
         node.findValue("products").elements().forEachRemaining(it -> {
             try {
                 productRepository.save(mapper.treeToValue(it, Product.class));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        node.findValue("departments").elements().forEachRemaining(it -> {
+            try {
+                departmentRepository.save(mapper.treeToValue(it, Department.class));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
