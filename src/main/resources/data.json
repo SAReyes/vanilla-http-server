@@ -2,11 +2,37 @@
   "products": [
     {
       "id": 1,
-      "name": "foo"
+      "name": "apple",
+      "departments": [
+        {
+          "id": 1,
+          "name": "grocery"
+        },
+        {
+          "id": 2,
+          "name": "greengrocery"
+        }
+      ]
     },
     {
       "id": 2,
-      "name": "bar"
+      "name": "banana",
+      "departments": [
+        {
+          "id": 1,
+          "name": "grocery"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "shampoo",
+      "departments": [
+        {
+          "id": 3,
+          "name": "beauty"
+        }
+      ]
     }
   ]
 }

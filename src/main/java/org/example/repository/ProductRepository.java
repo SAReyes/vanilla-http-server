@@ -4,6 +4,7 @@ import org.example.domain.Product;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ProductRepository {
     private List<Product> products;
@@ -23,9 +24,15 @@ public class ProductRepository {
     }
 
     public Optional<Product> findByName(String name) {
-        return findAll().stream()
+        return products.stream()
                 .filter(it -> it.getName().equals(name))
                 .findFirst();
+    }
+
+    public List<Product> findByDepartment(String department) {
+        return products.stream()
+                .filter(it -> it.getDepartments().stream().anyMatch(d -> d.getName().equals(department)))
+                .collect(Collectors.toList());
     }
 
     public List<Product> findAll() {

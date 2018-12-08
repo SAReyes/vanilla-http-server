@@ -12,16 +12,18 @@ public class ProductHandler {
     }
 
     public Object get(RestExchange exchange) {
-        String nameParam = exchange.getParam("name");
+        String name = exchange.getParam("name");
+        String department = exchange.getParam("department");
 
-        if (nameParam == null) {
-            return repository.findAll();
-        } else {
-            return repository.findByName(nameParam).orElse(null);
+        if (name != null) {
+            return repository.findByName(name).orElse(null);
         }
-    }
 
-    public Object post(RestExchange exchange) {
-        return "Hello, post";
+        if (department != null) {
+            return repository.findByDepartment(department);
+        } else {
+            return repository.findAll();
+        }
+
     }
 }

@@ -11,11 +11,8 @@ import org.example.server.RestServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.example.server.RestServer.get;
-import static org.example.server.RestServer.post;
 
 public class Entrypoint {
 
@@ -37,10 +34,7 @@ public class Entrypoint {
         });
 
         new RestServer()
-                .nest("/product",
-                        get(productHandler::get),
-                        post(productHandler::post)
-                )
+                .nest("/product", get(productHandler::get))
                 .start();
     }
 }
