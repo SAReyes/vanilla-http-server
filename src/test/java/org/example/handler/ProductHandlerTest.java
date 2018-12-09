@@ -1,9 +1,11 @@
 package org.example.handler;
 
+import org.example.domain.Category;
 import org.example.domain.Department;
 import org.example.domain.Product;
 import org.example.dto.ProductDto;
 import org.example.mapper.ProductMapper;
+import org.example.repository.CategoryRepository;
 import org.example.repository.DepartmentRepository;
 import org.example.repository.ProductRepository;
 import org.example.server.RestExchange;
@@ -11,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -29,15 +32,19 @@ public class ProductHandlerTest {
 
     @Mock
     private ProductRepository repository;
-
     @Mock
     private DepartmentRepository departmentRepository;
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @Mock
     private ProductMapper productMapper;
 
     @Mock
     private RestExchange exchange;
+
+    @Mock
+    private List<Product> domainProducts;
 
     private ProductDto product1;
     private ProductDto product2;
@@ -58,13 +65,11 @@ public class ProductHandlerTest {
         product2.setName("p-2");
         product2.setDepartments(Collections.singletonList(department2));
 
-        sut = new ProductHandler(repository, departmentRepository, productMapper);
+        sut = new ProductHandler(repository, departmentRepository, categoryRepository, productMapper);
     }
 
     @Test
     public void gets_all_products() {
-        List<Product> domainProducts = new ArrayList<>();
-
         given(exchange.getParam("name")).willReturn(null);
         given(repository.findAll()).willReturn(domainProducts);
         given(productMapper.toDtoList(domainProducts)).willReturn(Arrays.asList(product1, product2));
@@ -91,12 +96,26 @@ public class ProductHandlerTest {
     @Test
     public void filters_products_by_department() {
         Department department = new Department();
-        department.setId(1L);
-        List<Product> domainProducts = new ArrayList<>();
+        department.setId(2L);
 
         given(exchange.getParam("department")).willReturn("d-1");
         given(departmentRepository.findByName("d-1")).willReturn(Optional.of(department));
-        given(repository.findByDepartment(1L)).willReturn(domainProducts);
+        given(repository.findByDepartment(2L)).willReturn(domainProducts);
+        given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(product2));
+
+        Object result = sut.get(exchange);
+
+        assertThat(result).isEqualTo(Collections.singletonList(product2));
+    }
+
+    @Test
+    public void filters_products_by_category() {
+        Category category = new Category();
+        category.setId(1L);
+
+        given(exchange.getParam("category")).willReturn("c-1");
+        given(categoryRepository.findByName("c-1")).willReturn(Optional.of(category));
+        given(repository.findByCategory(1L)).willReturn(domainProducts);
         given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(product2));
 
         Object result = sut.get(exchange);

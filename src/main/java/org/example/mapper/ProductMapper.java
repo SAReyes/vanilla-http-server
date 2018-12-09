@@ -1,8 +1,10 @@
 package org.example.mapper;
 
+import org.example.domain.Category;
 import org.example.domain.Department;
 import org.example.domain.Product;
 import org.example.dto.ProductDto;
+import org.example.repository.CategoryRepository;
 import org.example.repository.DepartmentRepository;
 
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.stream.Collectors;
 
 public class ProductMapper {
     private DepartmentRepository departmentRepository;
+    private CategoryRepository categoryRepository;
 
-    public ProductMapper(DepartmentRepository departmentRepository) {
+    public ProductMapper(DepartmentRepository departmentRepository, CategoryRepository categoryRepository) {
         this.departmentRepository = departmentRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public ProductDto toDto(Product product) {
@@ -23,10 +27,17 @@ public class ProductMapper {
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
+        List<Category> categories = product.getCategories().stream()
+                .map(it -> categoryRepository.findById(it))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
         ProductDto dto = new ProductDto();
         dto.setId(product.getId());
         dto.setName(product.getName());
         dto.setDepartments(departments);
+        dto.setCategories(categories);
 
         return dto;
     }

@@ -15,4 +15,10 @@ public class ProductRepository extends GenericRepository<Product> {
                 .filter(it -> it.getDepartments().stream().anyMatch(d -> d == department))
                 .collect(Collectors.toList());
     }
+
+    public List<Product> findByCategory(long category) {
+        return getRepository().stream()
+                .filter(it -> it.getCategories().stream().anyMatch(c -> c == category))
+                .collect(Collectors.toList());
+    }
 }
