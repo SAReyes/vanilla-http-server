@@ -2,7 +2,7 @@ package org.example.domain;
 
 import java.util.List;
 
-public class Order {
+public class Cart {
     private long id;
     private List<Product> products;
 

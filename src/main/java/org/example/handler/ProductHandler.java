@@ -37,16 +37,21 @@ public class ProductHandler {
             return repository.findByName(name).map(it -> mapper.toDto(it)).orElse(null);
         }
 
-        if (departmentName != null && categoryName == null) {
-            Optional<Department> department = departmentRepository.findByName(departmentName);
-            return department.isPresent()
-                    ? mapper.toDtoList(repository.findByDepartment(department.get().getId()))
-                    : Collections.emptyList();
-        } else if (departmentName == null && categoryName != null) {
-            Optional<Category> category = categoryRepository.findByName(categoryName);
-            return category.isPresent()
-                    ? mapper.toDtoList(repository.findByCategory(category.get().getId()))
-                    : Collections.emptyList();
+        Optional<Department> department = departmentName == null
+                ? Optional.empty()
+                : departmentRepository.findByName(departmentName);
+
+        Optional<Category> category = categoryName == null
+                ? Optional.empty()
+                : categoryRepository.findByName(categoryName);
+
+        if (department.isPresent() && category.isPresent()) {
+            return mapper.toDtoList(repository.findByDepartmentAndCategory(department.get().getId(),
+                    category.get().getId()));
+        } else if (department.isPresent()) {
+            return mapper.toDtoList(repository.findByDepartment(department.get().getId()));
+        } else if (category.isPresent()) {
+            return mapper.toDtoList(repository.findByCategory(category.get().getId()));
         } else {
             return mapper.toDtoList(repository.findAll());
         }

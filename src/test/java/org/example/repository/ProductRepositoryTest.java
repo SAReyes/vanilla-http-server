@@ -1,6 +1,5 @@
 package org.example.repository;
 
-import org.example.domain.Department;
 import org.example.domain.Product;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,29 +24,55 @@ public class ProductRepositoryTest {
     @Mock
     private List<Product> repo;
 
-    private Product product1;
-    private Product product2;
+    private Product foo;
+    private Product bar;
+    private Product baz;
 
     @Before
     public void setUp() {
-        product1 = new Product();
-        product1.setId(1L);
-        product1.setName("p-1");
-        product1.setDepartments(Arrays.asList(1L, 2L));
-        product2 = new Product();
-        product2.setId(2L);
-        product2.setName("p-2");
-        product2.setDepartments(Collections.singletonList(2L));
+        foo = new Product();
+        foo.setId(1L);
+        foo.setName("p-1");
+        foo.setDepartments(Arrays.asList(3L, 4L));
+        foo.setCategories(Collections.singletonList(5L));
+        bar = new Product();
+        bar.setId(2L);
+        bar.setName("p-2");
+        bar.setDepartments(Collections.singletonList(3L));
+        bar.setCategories(Collections.singletonList(6L));
+        baz = new Product();
+        baz.setId(3L);
+        baz.setName("p-2");
+        baz.setDepartments(Collections.singletonList(4L));
+        baz.setCategories(Collections.singletonList(6L));
 
         sut = new ProductRepository(repo);
     }
 
     @Test
     public void find_by_department() {
-        given(repo.stream()).willReturn(Stream.of(product1, product2));
+        given(repo.stream()).willReturn(Stream.of(foo, bar, baz));
 
-        List<Product> result = sut.findByDepartment(1);
+        List<Product> result = sut.findByDepartment(4);
 
-        assertThat(result).isEqualTo(Collections.singletonList(product1));
+        assertThat(result).isEqualTo(Arrays.asList(foo, baz));
+    }
+
+    @Test
+    public void find_by_category() {
+        given(repo.stream()).willReturn(Stream.of(foo, bar, baz));
+
+        List<Product> result = sut.findByCategory(6);
+
+        assertThat(result).isEqualTo(Arrays.asList(bar, baz));
+    }
+
+    @Test
+    public void find_by_department_and_category() {
+        given(repo.stream()).willReturn(Stream.of(foo, bar, baz));
+
+        List<Product> result = sut.findByDepartmentAndCategory(3,6);
+
+        assertThat(result).isEqualTo(Collections.singletonList(bar));
     }
 }

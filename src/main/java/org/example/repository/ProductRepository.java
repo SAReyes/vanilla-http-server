@@ -2,6 +2,7 @@ package org.example.repository;
 
 import org.example.domain.Product;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,13 @@ public class ProductRepository extends GenericRepository<Product> {
     public List<Product> findByCategory(long category) {
         return getRepository().stream()
                 .filter(it -> it.getCategories().stream().anyMatch(c -> c == category))
+                .collect(Collectors.toList());
+    }
+
+    public List<Product> findByDepartmentAndCategory(long department, long category) {
+        return getRepository().stream()
+                .filter(it -> it.getDepartments().stream().anyMatch(d -> d == department)
+                        && it.getCategories().stream().anyMatch(c -> c == category))
                 .collect(Collectors.toList());
     }
 }

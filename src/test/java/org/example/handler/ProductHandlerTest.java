@@ -122,4 +122,23 @@ public class ProductHandlerTest {
 
         assertThat(result).isEqualTo(Collections.singletonList(product2));
     }
+
+    @Test
+    public void filters_products_by_category_and_name() {
+        Category category = new Category();
+        category.setId(1L);
+        Department department = new Department();
+        department.setId(2L);
+
+        given(exchange.getParam("category")).willReturn("c-1");
+        given(categoryRepository.findByName("c-1")).willReturn(Optional.of(category));
+        given(exchange.getParam("department")).willReturn("d-1");
+        given(departmentRepository.findByName("d-1")).willReturn(Optional.of(department));
+        given(repository.findByDepartmentAndCategory(2L, 1L)).willReturn(domainProducts);
+        given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(product2));
+
+        Object result = sut.get(exchange);
+
+        assertThat(result).isEqualTo(Collections.singletonList(product2));
+    }
 }
