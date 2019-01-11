@@ -41,6 +41,11 @@ public class CartRepositoryImpl implements CartRepository {
         return optionalCart;
     }
 
+    @Override
+    public Optional<Cart> deleteProductsFromCart(Long id, List<Long> products) {
+        return Optional.empty();
+    }
+
     private Long getNextId() {
         return ids.getAndIncrement();
     }

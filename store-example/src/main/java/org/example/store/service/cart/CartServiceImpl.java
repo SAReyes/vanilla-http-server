@@ -38,20 +38,23 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Optional<CartResponseDto> addProductsToCart(Long id, CartRequestDto request) {
-        List<Long> productIds = request.getProducts().stream()
+        return cartRepository.addProductsToCart(id, getProductsIds(request))
+                .map(cart -> cartMapper.toDto(cart));
+    }
+
+    @Override
+    public Optional<CartResponseDto> delete(Long id, CartRequestDto request) {
+        return cartRepository.deleteProductsFromCart(id, getProductsIds(request))
+                .map(cart -> cartMapper.toDto(cart));
+    }
+
+    private List<Long> getProductsIds(CartRequestDto request) {
+        return request.getProducts().stream()
                 .flatMapToLong(product ->
                         LongStream.range(0, product.getQuantity())
                                 .map(it -> product.getId())
                 )
                 .boxed()
                 .collect(Collectors.toList());
-
-        return cartRepository.addProductsToCart(id, productIds)
-                .map(cart -> cartMapper.toDto(cart));
-    }
-
-    @Override
-    public Optional<CartResponseDto> delete(Long id, CartRequestDto request) {
-        return Optional.empty();
     }
 }

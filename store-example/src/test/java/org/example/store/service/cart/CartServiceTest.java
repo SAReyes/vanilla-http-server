@@ -69,7 +69,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void creating_a_cart_will_return_the_expected_response() {
+    public void creating_a_cart_should_return_the_expected_response() {
         given(mapper.toDto(any())).willReturn(responseDto);
 
         CartResponseDto result = sut.create(requestDto);
@@ -78,7 +78,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void finding_a_cart_calls_the_repository() {
+    public void finding_a_cart_should_call_the_repository() {
         given(repository.find(any())).willReturn(Optional.of(domain));
 
         sut.find(1L);
@@ -87,7 +87,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void finding_a_cart_will_map_it_correctly() {
+    public void finding_a_cart_should_map_it_correctly() {
         given(repository.find(any())).willReturn(Optional.of(domain));
         given(mapper.toDto(any())).willReturn(responseDto);
 
@@ -97,7 +97,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void not_finding_a_cart_when_fetching_a_cart_will_return_empty_optional() {
+    public void not_finding_a_cart_when_fetching_a_cart_should_return_an_empty_optional() {
         given(repository.find(any())).willReturn(Optional.empty());
 
         Optional<CartResponseDto> result = sut.find(1L);
@@ -106,7 +106,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void finding_a_cart_will_return_it() {
+    public void finding_a_cart_should_return_it() {
         given(repository.find(any())).willReturn(Optional.of(domain));
         given(mapper.toDto(any())).willReturn(responseDto);
 
@@ -116,7 +116,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void not_finding_a_cart_when_adding_products_to_a_cart_will_return_empty_optional() {
+    public void not_finding_a_cart_when_adding_products_to_a_cart_should_return_an_empty_optional() {
         given(repository.addProductsToCart(any(), any())).willReturn(Optional.empty());
 
         Optional<CartResponseDto> result = sut.addProductsToCart(1L, requestDto);
@@ -125,7 +125,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void adding_products_to_a_cart_will_add_the_products_using_the_repository() {
+    public void adding_products_to_a_cart_should_use_the_repository() {
         CartProductRequestDto p1 = new CartProductRequestDto();
         p1.setId(2L);
         p1.setQuantity(1L);
@@ -143,7 +143,7 @@ public class CartServiceTest {
     }
 
     @Test
-    public void adding_products_to_a_cart_will_map_the_response() {
+    public void adding_products_to_a_cart_should_map_the_response() {
         given(repository.addProductsToCart(any(), any())).willReturn(Optional.of(domain));
         given(mapper.toDto(any())).willReturn(responseDto);
 
@@ -153,12 +153,49 @@ public class CartServiceTest {
     }
 
     @Test
-    public void adding_products_to_a_cart_will_return_the_expected_response() {
+    public void adding_products_to_a_cart_should_return_the_expected_response() {
         given(repository.addProductsToCart(any(), any())).willReturn(Optional.of(domain));
         given(mapper.toDto(any())).willReturn(responseDto);
 
         Optional<CartResponseDto> result = sut.addProductsToCart(1L, requestDto);
 
         assertThat(result).contains(responseDto);
+    }
+
+    @Test
+    public void should_delete_products_from_a_cart() {
+        given(repository.deleteProductsFromCart(any(), any())).willReturn(Optional.of(domain));
+        given(mapper.toDto(any())).willReturn(responseDto);
+
+        Optional<CartResponseDto> result = sut.delete(1L, requestDto);
+
+        assertThat(result).contains(responseDto);
+    }
+
+    @Test
+    public void when_no_cart_is_found_should_return_an_empty_optional() {
+        given(repository.deleteProductsFromCart(any(), any())).willReturn(Optional.empty());
+
+        Optional<CartResponseDto> result = sut.delete(1L, requestDto);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void deleting_products_from_a_cart_should_use_the_repository() {
+        CartProductRequestDto p1 = new CartProductRequestDto();
+        p1.setId(2L);
+        p1.setQuantity(1L);
+        CartProductRequestDto p2 = new CartProductRequestDto();
+        p2.setId(3L);
+        p2.setQuantity(2L);
+        requestDto.setProducts(asList(p1, p2));
+        domain.setId(1L);
+
+        given(repository.deleteProductsFromCart(any(), any())).willReturn(Optional.of(domain));
+
+        sut.delete(1L, requestDto);
+
+        verify(repository).deleteProductsFromCart(1L, asList(2L, 3L, 3L));
     }
 }
