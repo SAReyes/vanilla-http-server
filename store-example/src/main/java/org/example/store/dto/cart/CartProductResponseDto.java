@@ -1,7 +1,7 @@
 package org.example.store.dto.cart;
 
-import org.example.store.domain.product.Category;
-import org.example.store.domain.product.Department;
+import org.example.store.dto.product.CategoryDto;
+import org.example.store.dto.product.DepartmentDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,8 @@ public class CartProductResponseDto {
     private Long id;
     private Long quantity;
     private String name;
-    private List<Department> departments;
-    private List<Category> categories;
+    private List<DepartmentDto> departments;
+    private List<CategoryDto> categories;
 
     public CartProductResponseDto() {
         departments = new ArrayList<>();
@@ -43,19 +43,19 @@ public class CartProductResponseDto {
         this.name = name;
     }
 
-    public List<Department> getDepartments() {
+    public List<DepartmentDto> getDepartments() {
         return departments;
     }
 
-    public void setDepartments(List<Department> departments) {
+    public void setDepartments(List<DepartmentDto> departments) {
         this.departments = departments;
     }
 
-    public List<Category> getCategories() {
+    public List<CategoryDto> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public void setCategories(List<CategoryDto> categories) {
         this.categories = categories;
     }
 }

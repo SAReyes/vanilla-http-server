@@ -1,6 +1,7 @@
-package org.example.store.repository;
+package org.example.store.repository.product;
 
 import org.assertj.core.api.Assertions;
+import org.example.store.domain.GenericTestDomain;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,25 +17,25 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GenericRepositoryTest {
-    private TestRepository sut;
+public class GenericItemRepositoryTest {
+    private GenericTestRepository sut;
 
     @Mock
-    private List<TestItem> repo;
+    private List<GenericTestDomain> repo;
 
-    private TestItem foo;
-    private TestItem bar;
+    private GenericTestDomain foo;
+    private GenericTestDomain bar;
 
     @Before
     public void setUp() {
-        foo = new TestItem();
+        foo = new GenericTestDomain();
         foo.setId(1L);
         foo.setName("foo");
-        bar = new TestItem();
+        bar = new GenericTestDomain();
         bar.setId(2L);
         bar.setName("bar");
 
-        sut = new TestRepository(repo);
+        sut = new GenericTestRepository(repo);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class GenericRepositoryTest {
     public void find_by_id() {
         given(repo.stream()).willReturn(Stream.of(foo, bar));
 
-        Optional<TestItem> result = sut.findById(2);
+        Optional<GenericTestDomain> result = sut.findById(2L);
 
         Assertions.assertThat(result).get().isEqualTo(bar);
     }
@@ -60,14 +61,14 @@ public class GenericRepositoryTest {
     public void find_by_name() {
         given(repo.stream()).willReturn(Stream.of(foo, bar));
 
-        Optional<TestItem> result = sut.findByName("bar");
+        Optional<GenericTestDomain> result = sut.findByName("bar");
 
         Assertions.assertThat(result).get().isEqualTo(bar);
     }
 
     @Test
     public void find_all() {
-        List<TestItem> result = sut.findAll();
+        List<GenericTestDomain> result = sut.findAll();
 
         Assertions.assertThat(result).isEqualTo(repo);
     }

@@ -1,6 +1,7 @@
-package org.example.store.repository;
+package org.example.store.repository.product;
 
 import org.example.store.domain.product.Product;
+import org.example.store.repository.product.ProductRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

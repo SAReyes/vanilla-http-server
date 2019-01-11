@@ -1,14 +1,14 @@
-package org.example.store.repository;
+package org.example.store.repository.product;
 
 import org.example.store.domain.product.GenericItem;
 
 import java.util.List;
 import java.util.Optional;
 
-public class GenericRepository<T extends GenericItem> {
+public abstract class GenericItemRepository<T extends GenericItem> {
     private List<T> repository;
 
-    GenericRepository(List<T> repository) {
+    public GenericItemRepository(List<T> repository) {
         this.repository = repository;
     }
 
@@ -20,7 +20,7 @@ public class GenericRepository<T extends GenericItem> {
         return repository.add(t);
     }
 
-    public Optional<T> findById(long id) {
+    public Optional<T> findById(Long id) {
         return repository.stream()
                 .filter(it -> it.getId() == id)
                 .findFirst();

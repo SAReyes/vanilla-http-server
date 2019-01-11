@@ -1,11 +1,11 @@
-package org.example.store.repository;
+package org.example.store.repository.product;
 
 import org.example.store.domain.product.Product;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProductRepository extends GenericRepository<Product> {
+public class ProductRepository extends GenericItemRepository<Product> {
     public ProductRepository(List<Product> repository) {
         super(repository);
     }

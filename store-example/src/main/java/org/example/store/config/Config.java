@@ -10,17 +10,18 @@ import org.example.store.domain.product.Department;
 import org.example.store.domain.product.Product;
 import org.example.store.handler.CartHandler;
 import org.example.store.handler.ProductHandler;
-import org.example.store.mapper.ProductMapper;
 import org.example.store.mapper.cart.CartMapper;
-import org.example.store.repository.CategoryRepository;
-import org.example.store.repository.DepartmentRepository;
-import org.example.store.repository.ProductRepository;
+import org.example.store.mapper.product.CategoryMapper;
+import org.example.store.mapper.product.DepartmentMapper;
+import org.example.store.mapper.product.ProductMapper;
+import org.example.store.repository.product.CategoryRepository;
+import org.example.store.repository.product.DepartmentRepository;
+import org.example.store.repository.product.ProductRepository;
 import org.example.store.repository.cart.CartRepository;
 import org.example.store.repository.cart.CartRepositoryImpl;
 import org.example.store.service.cart.CartService;
 import org.example.store.service.cart.CartServiceImpl;
-import org.example.store.service.product.ProductService;
-import org.example.store.service.product.ProductServiceImpl;
+import org.example.store.service.product.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,15 +30,24 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Config {
 
     public static ProductStore createStore(String seed) throws IOException {
-        ProductRepository productRepository = new ProductRepository(new ArrayList<>());
         DepartmentRepository departmentRepository = new DepartmentRepository(new ArrayList<>());
         CategoryRepository categoryRepository = new CategoryRepository(new ArrayList<>());
-        ProductMapper productMapper = new ProductMapper(departmentRepository, categoryRepository);
-        ProductHandler productHandler = new ProductHandler(productRepository, departmentRepository, categoryRepository,
-                productMapper);
+        ProductRepository productRepository = new ProductRepository(new ArrayList<>());
+        DepartmentMapper departmentMapper = new DepartmentMapper();
+        CategoryMapper categoryMapper = new CategoryMapper();
+
+        DepartmentService departmentService = new DepartmentServiceImpl(departmentRepository, departmentMapper);
+        CategoryService categoryService = new CategoryServiceImpl(categoryRepository, categoryMapper);
 
 
-        ProductService productService = new ProductServiceImpl(productRepository, productMapper);
+        ProductMapper productMapper = new ProductMapper(departmentService, categoryService);
+
+        ProductService productService = new ProductServiceImpl(productRepository, productMapper, departmentService,
+                categoryService);
+
+        ProductHandler productHandler = new ProductHandler(productService);
+
+
 
         CartRepository cartRepository = new CartRepositoryImpl(new ArrayList<>(), new AtomicLong(1));
         CartMapper cartMapper = new CartMapper(productService);
