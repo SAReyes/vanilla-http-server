@@ -43,7 +43,11 @@ public class CartRepositoryImpl implements CartRepository {
 
     @Override
     public Optional<Cart> deleteProductsFromCart(Long id, List<Long> products) {
-        return Optional.empty();
+        return find(id)
+                .map(cart -> {
+                    products.forEach(product -> cart.getProducts().remove(product));
+                    return cart;
+                });
     }
 
     private Long getNextId() {

@@ -69,4 +69,20 @@ public class CartRepositoryTest {
 
         assertThat(result).get().hasFieldOrPropertyWithValue("products", asList(2L, 3L));
     }
+
+    @Test
+    public void should_delete_products_from_a_cart() {
+        foo.setProducts(new ArrayList<>(asList(1L, 2L, 2L, 3L, 4L)));
+
+        Optional<Cart> result = sut.deleteProductsFromCart(1L, asList(2L, 3L));
+
+        assertThat(result).get().hasFieldOrPropertyWithValue("products", asList(1L, 2L, 4L));
+    }
+
+    @Test
+    public void deleting_products_from_a_non_existing_cart_should_return_an_empty_optional() {
+        Optional<Cart> result = sut.deleteProductsFromCart(3L, emptyList());
+
+        assertThat(result).isEmpty();
+    }
 }
