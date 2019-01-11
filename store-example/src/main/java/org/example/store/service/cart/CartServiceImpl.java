@@ -48,6 +48,11 @@ public class CartServiceImpl implements CartService {
                 .map(cart -> cartMapper.toDto(cart));
     }
 
+    @Override
+    public boolean delete(Long id) {
+        return cartRepository.delete(id);
+    }
+
     private List<Long> getProductsIds(CartRequestDto request) {
         return request.getProducts().stream()
                 .flatMapToLong(product ->

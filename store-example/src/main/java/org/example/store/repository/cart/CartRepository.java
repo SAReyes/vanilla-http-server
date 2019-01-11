@@ -11,4 +11,5 @@ public interface CartRepository {
     Cart saveNew(Cart cart);
     Optional<Cart> addProductsToCart(Long id, List<Long> products);
     Optional<Cart> deleteProductsFromCart(Long id, List<Long> products);
+    boolean delete(Long id);
 }

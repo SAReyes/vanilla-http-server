@@ -25,10 +25,14 @@ public class CartHandler {
         Optional<Long> cartId = getCartId(exchange.getPath());
         CartRequestDto request = exchange.getBody(CartRequestDto.class);
 
+        if (cartId.isPresent() && request.getProducts().isEmpty() && service.delete(cartId.get())) {
+            return "OK"; // TODO: body-less messages
+        }
         return cartId
                 .map(
-                        id -> service.delete(id, request)
-                                .orElseThrow(() -> new NotFoundException("404")) // TODO: Exception handling
+                        id ->
+                                service.delete(id, request)
+                                        .orElseThrow(() -> new NotFoundException("404")) // TODO: Exception handling
                 )
                 .get();
     }

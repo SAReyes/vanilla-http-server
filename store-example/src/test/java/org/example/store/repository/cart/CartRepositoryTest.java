@@ -22,6 +22,7 @@ public class CartRepositoryTest {
 
     private Cart foo;
     private Cart bar;
+    private List<Cart> carts;
 
     @Before
     public void setUp() {
@@ -30,7 +31,7 @@ public class CartRepositoryTest {
         bar = new Cart();
         bar.setId(2L);
 
-        List<Cart> carts = new ArrayList<>(asList(foo, bar));
+        carts = new ArrayList<>(asList(foo, bar));
 
         sut = new CartRepositoryImpl(carts, new AtomicLong(3));
     }
@@ -84,5 +85,26 @@ public class CartRepositoryTest {
         Optional<Cart> result = sut.deleteProductsFromCart(3L, emptyList());
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void deleting_a_non_existing_cart_should_return_false() {
+        boolean result = sut.delete(3L);
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void deleting_a_cart_should_return_true() {
+        boolean result = sut.delete(2L);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void deleting_a_cart_should_remove_it_from_the_list() {
+        sut.delete(2L);
+
+        assertThat(carts).containsExactly(foo);
     }
 }

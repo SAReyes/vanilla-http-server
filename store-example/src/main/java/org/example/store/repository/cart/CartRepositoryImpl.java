@@ -50,6 +50,13 @@ public class CartRepositoryImpl implements CartRepository {
                 });
     }
 
+    @Override
+    public boolean delete(Long id) {
+        return find(id)
+                .map(cart -> repository.remove(cart))
+                .orElse(false);
+    }
+
     private Long getNextId() {
         return ids.getAndIncrement();
     }

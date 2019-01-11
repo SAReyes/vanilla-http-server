@@ -198,4 +198,20 @@ public class CartServiceTest {
 
         verify(repository).deleteProductsFromCart(1L, asList(2L, 3L, 3L));
     }
+
+    @Test
+    public void deleting_a_cart_should_use_the_repository() {
+        sut.delete(1L);
+
+        verify(repository).delete(1L);
+    }
+    
+    @Test
+    public void deleting_a_cart_should_return_a_success_boolean() {
+        given(repository.delete(any())).willReturn(true);
+
+        boolean result = sut.delete(1L);
+
+        assertThat(result).isTrue();
+    }
 }

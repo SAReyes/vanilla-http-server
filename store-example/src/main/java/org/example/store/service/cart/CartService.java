@@ -10,4 +10,5 @@ public interface CartService {
     Optional<CartResponseDto> find(Long id);
     Optional<CartResponseDto> addProductsToCart(Long id, CartRequestDto request);
     Optional<CartResponseDto> delete(Long id, CartRequestDto request);
+    boolean delete(Long id);
 }
