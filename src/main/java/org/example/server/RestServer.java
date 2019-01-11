@@ -1,5 +1,7 @@
 package org.example.server;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
@@ -50,7 +52,7 @@ public class RestServer {
         handlers.forEach((context, handlers) -> {
             HttpContext httpContext = this.server.createContext(context);
             httpContext.setHandler(exchange -> {
-                RestExchange restExchange = new RestExchange(exchange);
+                RestExchange restExchange = new RestExchange(exchange, mapper);
                 Function<RestExchange, Object> handler = handlers.get(restExchange.getMethod());
 
                 if (handler == null) {
@@ -99,6 +101,7 @@ public class RestServer {
 
     private void writeResponseBody(HttpExchange exchange, Object response) throws IOException {
         String jsonResponse = mapper.writeValueAsString(response);
+        exchange.getResponseHeaders().set("Content-Type", "Application/json");
         exchange.sendResponseHeaders(HttpStatus.OK, jsonResponse.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(jsonResponse.getBytes());
@@ -106,7 +109,8 @@ public class RestServer {
     }
 
     private void init() {
-        this.mapper = new ObjectMapper();
+        this.mapper = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.handlers = new HashMap<>();
     }
 

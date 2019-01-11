@@ -1,4 +1,4 @@
-package org.example.domain;
+package org.example.domain.product;
 
 import java.util.Objects;
 
@@ -27,11 +27,11 @@ public abstract class GenericItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GenericItem that = (GenericItem) o;
-        return Objects.equals(getName(), that.getName());
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName());
+        return Objects.hash(id);
     }
 }

@@ -16,7 +16,11 @@ public class Entrypoint {
 
         new RestServer()
                 .nest("/product", get(store.getProductHandler()::get))
-                .nest("/cart", post(store.getCartHandler()::post))
+                .nest(
+                        "/cart",
+                        post(store.getCartHandler()::post),
+                        get(store.getCartHandler()::get)
+                )
                 .start();
     }
 }

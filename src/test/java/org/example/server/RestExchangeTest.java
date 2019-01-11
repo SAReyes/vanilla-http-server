@@ -23,7 +23,7 @@ public class RestExchangeTest {
 
     @Before
     public void setUp() {
-        sut = new RestExchange(exchange);
+        sut = new RestExchange(exchange, null);
     }
 
     @Test

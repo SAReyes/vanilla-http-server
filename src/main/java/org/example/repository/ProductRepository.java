@@ -1,8 +1,7 @@
 package org.example.repository;
 
-import org.example.domain.Product;
+import org.example.domain.product.Product;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

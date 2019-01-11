@@ -1,8 +1,13 @@
 package org.example.server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,10 +19,12 @@ import static java.util.stream.Collectors.mapping;
 
 public class RestExchange {
     private HttpExchange exchange;
+    private ObjectMapper mapper;
     private Map<String, String> params;
 
-    public RestExchange(HttpExchange exchange) {
+    public RestExchange(HttpExchange exchange, ObjectMapper mapper) {
         this.exchange = exchange;
+        this.mapper = mapper;
     }
 
     public String getParam(String param) {
@@ -39,6 +46,34 @@ public class RestExchange {
                 .collect(Collectors.groupingBy(it -> ((Map.Entry) it).getKey().toString(),
                         mapping(it -> ((Map.Entry) it).getValue().toString(), joining(",")))
                 );
+    }
+
+    public String getPath() {
+        return exchange.getRequestURI().toString();
+    }
+
+    public <T> T getBody(Class<T> clazz) {
+        try {
+            InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(isr);
+
+            int b;
+            StringBuilder buf = new StringBuilder();
+            while ((b = br.read()) != -1) {
+                buf.append((char) b);
+            }
+
+            br.close();
+            isr.close();
+
+            String body = buf.toString();
+
+            body = body.trim().equals("") ? "{}" : body;
+
+            return mapper.readValue(body, clazz);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Map.Entry<String, String> splitQueryParameter(String param) {

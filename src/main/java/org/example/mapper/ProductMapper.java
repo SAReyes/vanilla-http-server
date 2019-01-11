@@ -1,9 +1,10 @@
 package org.example.mapper;
 
-import org.example.domain.Category;
-import org.example.domain.Department;
-import org.example.domain.Product;
-import org.example.dto.ProductDto;
+import org.example.domain.product.Category;
+import org.example.domain.product.Department;
+import org.example.domain.product.GenericItem;
+import org.example.domain.product.Product;
+import org.example.dto.product.ProductDto;
 import org.example.repository.CategoryRepository;
 import org.example.repository.DepartmentRepository;
 
@@ -46,5 +47,16 @@ public class ProductMapper {
         return products.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public Product toDomain(ProductDto product) {
+        Product domain = new Product();
+
+        domain.setId(product.getId());
+        domain.setName(product.getName());
+        domain.setDepartments(product.getDepartments().stream().map(GenericItem::getId).collect(Collectors.toList()));
+        domain.setCategories(product.getCategories().stream().map(GenericItem::getId).collect(Collectors.toList()));
+
+        return domain;
     }
 }

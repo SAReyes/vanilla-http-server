@@ -1,15 +1,13 @@
 package org.example.handler;
 
-import org.example.domain.Category;
-import org.example.domain.Department;
-import org.example.dto.ProductDto;
+import org.example.domain.product.Category;
+import org.example.domain.product.Department;
 import org.example.mapper.ProductMapper;
 import org.example.repository.CategoryRepository;
 import org.example.repository.DepartmentRepository;
 import org.example.repository.ProductRepository;
 import org.example.server.RestExchange;
 
-import java.util.Collections;
 import java.util.Optional;
 
 public class ProductHandler {

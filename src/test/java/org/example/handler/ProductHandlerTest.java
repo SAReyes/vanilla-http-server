@@ -1,9 +1,9 @@
 package org.example.handler;
 
-import org.example.domain.Category;
-import org.example.domain.Department;
-import org.example.domain.Product;
-import org.example.dto.ProductDto;
+import org.example.domain.product.Category;
+import org.example.domain.product.Department;
+import org.example.domain.product.Product;
+import org.example.dto.product.ProductDto;
 import org.example.mapper.ProductMapper;
 import org.example.repository.CategoryRepository;
 import org.example.repository.DepartmentRepository;
@@ -13,10 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,8 +44,8 @@ public class ProductHandlerTest {
     @Mock
     private List<Product> domainProducts;
 
-    private ProductDto product1;
-    private ProductDto product2;
+    private ProductDto foo;
+    private ProductDto bar;
 
     @Before
     public void setUp() {
@@ -56,14 +54,14 @@ public class ProductHandlerTest {
         Department department2 = new Department();
         department2.setId(1L);
 
-        product1 = new ProductDto();
-        product1.setId(1L);
-        product1.setName("p-1");
-        product1.setDepartments(Arrays.asList(department1, department2));
-        product2 = new ProductDto();
-        product2.setId(2L);
-        product2.setName("p-2");
-        product2.setDepartments(Collections.singletonList(department2));
+        foo = new ProductDto();
+        foo.setId(1L);
+        foo.setName("foo");
+        foo.setDepartments(Arrays.asList(department1, department2));
+        bar = new ProductDto();
+        bar.setId(2L);
+        bar.setName("bar");
+        bar.setDepartments(Collections.singletonList(department2));
 
         sut = new ProductHandler(repository, departmentRepository, categoryRepository, productMapper);
     }
@@ -72,11 +70,11 @@ public class ProductHandlerTest {
     public void gets_all_products() {
         given(exchange.getParam("name")).willReturn(null);
         given(repository.findAll()).willReturn(domainProducts);
-        given(productMapper.toDtoList(domainProducts)).willReturn(Arrays.asList(product1, product2));
+        given(productMapper.toDtoList(domainProducts)).willReturn(Arrays.asList(foo, bar));
 
         Object result = sut.get(exchange);
 
-        assertThat(result).isEqualTo(Arrays.asList(product1, product2));
+        assertThat(result).isEqualTo(Arrays.asList(foo, bar));
     }
 
     @Test
@@ -84,13 +82,13 @@ public class ProductHandlerTest {
         Product domainProduct = new Product();
         domainProduct.setName("domain");
 
-        given(exchange.getParam("name")).willReturn("p-1");
-        given(repository.findByName("p-1")).willReturn(Optional.of(domainProduct));
-        given(productMapper.toDto(domainProduct)).willReturn(product1);
+        given(exchange.getParam("name")).willReturn("foo");
+        given(repository.findByName("foo")).willReturn(Optional.of(domainProduct));
+        given(productMapper.toDto(domainProduct)).willReturn(foo);
 
         Object result = sut.get(exchange);
 
-        assertThat(result).isEqualTo(product1);
+        assertThat(result).isEqualTo(foo);
     }
 
     @Test
@@ -101,11 +99,11 @@ public class ProductHandlerTest {
         given(exchange.getParam("department")).willReturn("d-1");
         given(departmentRepository.findByName("d-1")).willReturn(Optional.of(department));
         given(repository.findByDepartment(2L)).willReturn(domainProducts);
-        given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(product2));
+        given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(bar));
 
         Object result = sut.get(exchange);
 
-        assertThat(result).isEqualTo(Collections.singletonList(product2));
+        assertThat(result).isEqualTo(Collections.singletonList(bar));
     }
 
     @Test
@@ -116,11 +114,11 @@ public class ProductHandlerTest {
         given(exchange.getParam("category")).willReturn("c-1");
         given(categoryRepository.findByName("c-1")).willReturn(Optional.of(category));
         given(repository.findByCategory(1L)).willReturn(domainProducts);
-        given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(product2));
+        given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(bar));
 
         Object result = sut.get(exchange);
 
-        assertThat(result).isEqualTo(Collections.singletonList(product2));
+        assertThat(result).isEqualTo(Collections.singletonList(bar));
     }
 
     @Test
@@ -135,10 +133,10 @@ public class ProductHandlerTest {
         given(exchange.getParam("department")).willReturn("d-1");
         given(departmentRepository.findByName("d-1")).willReturn(Optional.of(department));
         given(repository.findByDepartmentAndCategory(2L, 1L)).willReturn(domainProducts);
-        given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(product2));
+        given(productMapper.toDtoList(domainProducts)).willReturn(Collections.singletonList(bar));
 
         Object result = sut.get(exchange);
 
-        assertThat(result).isEqualTo(Collections.singletonList(product2));
+        assertThat(result).isEqualTo(Collections.singletonList(bar));
     }
 }

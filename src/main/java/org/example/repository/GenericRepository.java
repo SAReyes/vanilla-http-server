@@ -1,6 +1,6 @@
 package org.example.repository;
 
-import org.example.domain.GenericItem;
+import org.example.domain.product.GenericItem;
 
 import java.util.List;
 import java.util.Optional;

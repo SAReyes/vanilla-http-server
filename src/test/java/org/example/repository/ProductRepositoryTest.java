@@ -1,6 +1,6 @@
 package org.example.repository;
 
-import org.example.domain.Product;
+import org.example.domain.product.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductRepositoryTest {
@@ -32,17 +31,17 @@ public class ProductRepositoryTest {
     public void setUp() {
         foo = new Product();
         foo.setId(1L);
-        foo.setName("p-1");
+        foo.setName("foo");
         foo.setDepartments(Arrays.asList(3L, 4L));
         foo.setCategories(Collections.singletonList(5L));
         bar = new Product();
         bar.setId(2L);
-        bar.setName("p-2");
+        bar.setName("bar");
         bar.setDepartments(Collections.singletonList(3L));
         bar.setCategories(Collections.singletonList(6L));
         baz = new Product();
         baz.setId(3L);
-        baz.setName("p-2");
+        baz.setName("baz");
         baz.setDepartments(Collections.singletonList(4L));
         baz.setCategories(Collections.singletonList(6L));
 

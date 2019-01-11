@@ -1,6 +1,5 @@
 package org.example.repository;
 
-import org.example.domain.Product;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,47 +21,47 @@ public class GenericRepositoryTest {
     @Mock
     private List<TestItem> repo;
 
-    private TestItem item1;
-    private TestItem item2;
+    private TestItem foo;
+    private TestItem bar;
 
     @Before
     public void setUp() {
-        item1 = new TestItem();
-        item1.setId(1L);
-        item1.setName("p-1");
-        item2 = new TestItem();
-        item2.setId(2L);
-        item2.setName("p-2");
+        foo = new TestItem();
+        foo.setId(1L);
+        foo.setName("foo");
+        bar = new TestItem();
+        bar.setId(2L);
+        bar.setName("bar");
 
         sut = new TestRepository(repo);
     }
 
     @Test
     public void adds_a_product() {
-        given(repo.add(item1)).willReturn(true);
+        given(repo.add(foo)).willReturn(true);
 
-        boolean result = sut.save(item1);
+        boolean result = sut.save(foo);
 
         assertThat(result).isTrue();
-        verify(repo).add(item1);
+        verify(repo).add(foo);
     }
 
     @Test
     public void find_by_id() {
-        given(repo.stream()).willReturn(Stream.of(item1, item2));
+        given(repo.stream()).willReturn(Stream.of(foo, bar));
 
         Optional<TestItem> result = sut.findById(2);
 
-        assertThat(result).get().isEqualTo(item2);
+        assertThat(result).get().isEqualTo(bar);
     }
 
     @Test
     public void find_by_name() {
-        given(repo.stream()).willReturn(Stream.of(item1, item2));
+        given(repo.stream()).willReturn(Stream.of(foo, bar));
 
-        Optional<TestItem> result = sut.findByName("p-2");
+        Optional<TestItem> result = sut.findByName("bar");
 
-        assertThat(result).get().isEqualTo(item2);
+        assertThat(result).get().isEqualTo(bar);
     }
 
     @Test
