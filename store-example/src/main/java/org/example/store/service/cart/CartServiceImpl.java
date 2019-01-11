@@ -49,4 +49,9 @@ public class CartServiceImpl implements CartService {
         return cartRepository.addProductsToCart(id, productIds)
                 .map(cart -> cartMapper.toDto(cart));
     }
+
+    @Override
+    public Optional<CartResponseDto> delete(Long id, CartRequestDto request) {
+        return Optional.empty();
+    }
 }

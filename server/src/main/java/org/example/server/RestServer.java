@@ -132,4 +132,14 @@ public class RestServer {
     public static Pair<HttpMethod, Function<RestExchange, Object>> post(Function<RestExchange, Object> handler) {
         return new Pair<>(HttpMethod.POST, handler);
     }
+
+    /**
+     * Create a delete method
+     *
+     * @param handler the post handler
+     * @return the handler to be nested
+     */
+    public static Pair<HttpMethod, Function<RestExchange, Object>> delete(Function<RestExchange, Object> handler) {
+        return new Pair<>(HttpMethod.DELETE, handler);
+    }
 }

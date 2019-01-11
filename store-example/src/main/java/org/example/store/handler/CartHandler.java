@@ -21,6 +21,18 @@ public class CartHandler {
         idPatter = Pattern.compile(PATH);
     }
 
+    public Object delete(RestExchange exchange) {
+        Optional<Long> cartId = getCartId(exchange.getPath());
+        CartRequestDto request = exchange.getBody(CartRequestDto.class);
+
+        return cartId
+                .map(
+                        id -> service.delete(id, request)
+                                .orElseThrow(() -> new NotFoundException("404")) // TODO: Exception handling
+                )
+                .get();
+    }
+
     public Object post(RestExchange exchange) {
         Optional<Long> cartId = getCartId(exchange.getPath());
         CartRequestDto request = exchange.getBody(CartRequestDto.class);

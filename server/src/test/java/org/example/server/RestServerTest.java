@@ -1,9 +1,6 @@
 package org.example.server;
 
 import com.sun.net.httpserver.HttpServer;
-import org.example.server.HttpMethod;
-import org.example.server.RestExchange;
-import org.example.server.RestServer;
 import org.example.server.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,23 +29,30 @@ public class RestServerTest {
     }
 
     @Test
-    public void maps_the_handler_correctly() {
+    public void should_map_the_handler_correctly() {
         sut.nest("/test-context", RestServer.get(spyHandler));
 
         assertThat(sut.handlers.get("/test-context").get(HttpMethod.GET)).isEqualTo(spyHandler);
     }
 
     @Test
-    public void get_pairs_the_right_method() {
+    public void get_should_pair_the_right_method() {
         Pair<HttpMethod, Function<RestExchange, Object>> response = RestServer.get(spyHandler);
 
         assertThat(response.getFirst()).isEqualTo(HttpMethod.GET);
     }
 
     @Test
-    public void post_pairs_the_right_method() {
+    public void post_should_pair_the_right_method() {
         Pair<HttpMethod, Function<RestExchange, Object>> response = RestServer.post(spyHandler);
 
         assertThat(response.getFirst()).isEqualTo(HttpMethod.POST);
+    }
+
+    @Test
+    public void delete_should_pair_the_right_method() {
+        Pair<HttpMethod, Function<RestExchange, Object>> response = RestServer.delete(spyHandler);
+
+        assertThat(response.getFirst()).isEqualTo(HttpMethod.DELETE);
     }
 }

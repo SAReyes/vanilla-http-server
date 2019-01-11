@@ -63,7 +63,7 @@ public class CartHandlerTest {
     }
 
     @Test
-    public void should_raise_not_found_exception_no_cart_is_found() {
+    public void retrieving_a_cart_when_the_cart_does_not_exist_should_raise_not_found_exception() {
         given(exchange.getPath()).willReturn("/cart/1");
         given(service.find(1L)).willReturn(Optional.empty());
 
@@ -71,25 +71,10 @@ public class CartHandlerTest {
     }
 
     @Test
-    public void should_raise_bad_request_exception_when_retrieving_an_item_and_the_id_is_not_a_number() {
+    public void retrieving_a_cart_when_the_id_is_not_a_number_should_raise_bad_request_exception() {
         given(exchange.getPath()).willReturn("/cart/foo");
 
         assertThatThrownBy(() -> sut.get(exchange)).isInstanceOf(BadRequestException.class);
-    }
-
-    @Test
-    public void should_raise_bad_request_exception_when_saving_an_item_and_the_id_is_not_a_number() {
-        given(exchange.getPath()).willReturn("/cart/foo");
-
-        assertThatThrownBy(() -> sut.post(exchange)).isInstanceOf(BadRequestException.class);
-    }
-
-    @Test
-    public void should_raise_not_found_exception_when_saving_an_item_and_the_cart_does_not_exist() {
-        given(exchange.getPath()).willReturn("/cart/1");
-        given(service.addProductsToCart(any(), any())).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> sut.post(exchange)).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -112,5 +97,57 @@ public class CartHandlerTest {
         sut.post(exchange);
 
         verify(service).create(requestDto);
+    }
+
+    @Test
+    public void saving_an_item_in_a_cart_when_the_id_is_not_a_number_should_raise_bad_request_exception() {
+        given(exchange.getPath()).willReturn("/cart/foo");
+
+        assertThatThrownBy(() -> sut.post(exchange)).isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    public void saving_an_item_in_a_cart_when_the_cart_is_not_found_should_rasie_not_found_exception(){
+        given(exchange.getPath()).willReturn("/cart/1");
+        given(service.addProductsToCart(any(), any())).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> sut.post(exchange)).isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    public void should_delete_products_from_an_existing_cart() {
+        given(exchange.getPath()).willReturn("/cart/1");
+        given(exchange.getBody(CartRequestDto.class)).willReturn(requestDto);
+        given(service.delete(any(), any())).willReturn(Optional.of(responseDto));
+
+        Object result = sut.delete(exchange);
+
+        assertThat(result).isEqualTo(responseDto);
+    }
+
+    @Test
+    public void deleting_items_from_a_cart_should_use_the_service() {
+        given(exchange.getPath()).willReturn("/cart/1");
+        given(exchange.getBody(CartRequestDto.class)).willReturn(requestDto);
+        given(service.delete(any(), any())).willReturn(Optional.of(responseDto));
+
+        sut.delete(exchange);
+
+        verify(service).delete(1L, requestDto);
+    }
+
+    @Test
+    public void deleting_items_from_a_cart_when_the_cart_does_not_exist_should_raise_not_found_exception() {
+        given(exchange.getPath()).willReturn("/cart/1");
+        given(service.delete(any(), any())).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> sut.delete(exchange)).isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    public void deleting_items_when_the_id_is_not_a_number_should_raise_bad_request_exception() {
+        given(exchange.getPath()).willReturn("/cart/foo");
+
+        assertThatThrownBy(() -> sut.delete(exchange)).isInstanceOf(BadRequestException.class);
     }
 }
