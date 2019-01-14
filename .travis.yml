@@ -1,3 +1,15 @@
 language: java
 jdk: openjdk8
-script: ./mvnw clean test
+
+services:
+  - docker
+
+script: 
+  - ./mvnw clean test
+
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
+
