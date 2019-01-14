@@ -1,8 +1,8 @@
 package org.example.store;
 
+import org.example.server.RestServer;
 import org.example.store.config.Config;
 import org.example.store.config.ProductStore;
-import org.example.server.RestServer;
 
 import java.io.IOException;
 

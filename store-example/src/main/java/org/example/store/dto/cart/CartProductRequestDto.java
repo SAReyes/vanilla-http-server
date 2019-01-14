@@ -20,4 +20,12 @@ public class CartProductRequestDto {
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
+
+    @Override
+    public String toString() {
+        return "CartProductRequestDto{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

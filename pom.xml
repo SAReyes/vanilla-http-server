@@ -23,6 +23,7 @@
     <modules>
         <module>server</module>
         <module>store-example</module>
+        <module>logger</module>
     </modules>
 
     <properties>
@@ -38,6 +39,11 @@
             <dependency>
                 <groupId>org.example</groupId>
                 <artifactId>server</artifactId>
+                <version>${version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>logger</artifactId>
                 <version>${version}</version>
             </dependency>
             <dependency>

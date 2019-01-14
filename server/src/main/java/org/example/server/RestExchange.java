@@ -20,11 +20,13 @@ import static java.util.stream.Collectors.mapping;
 public class RestExchange {
     private HttpExchange exchange;
     private ObjectMapper mapper;
+    private String body;
     private Map<String, String> params;
 
     public RestExchange(HttpExchange exchange, ObjectMapper mapper) {
         this.exchange = exchange;
         this.mapper = mapper;
+        this.body = getBodyAsString();
     }
 
     public String getParam(String param) {
@@ -54,6 +56,28 @@ public class RestExchange {
 
     public <T> T getBody(Class<T> clazz) {
         try {
+            String body = this.getBody();
+
+            body = body.trim().equals("") ? "{}" : body;
+
+            return mapper.readValue(body, clazz);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+
+    @Override
+    public String toString() {
+        return getMethod() + " " + exchange.getRequestURI();
+    }
+
+    private String getBodyAsString() {
+        try {
             InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(isr);
 
@@ -66,11 +90,7 @@ public class RestExchange {
             br.close();
             isr.close();
 
-            String body = buf.toString();
-
-            body = body.trim().equals("") ? "{}" : body;
-
-            return mapper.readValue(body, clazz);
+            return buf.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -25,6 +26,7 @@ public class RestExchangeTest {
 
     @Before
     public void setUp() {
+        given(exchange.getRequestBody()).willReturn(new ByteArrayInputStream("".getBytes()));
         sut = new RestExchange(exchange, null);
     }
 

@@ -1,18 +1,20 @@
 package org.example.store.service.product;
 
-import org.example.store.domain.product.Category;
+import org.example.logger.LoggerFactory;
 import org.example.store.domain.product.Product;
 import org.example.store.dto.product.CategoryDto;
 import org.example.store.dto.product.DepartmentDto;
 import org.example.store.dto.product.ProductResponseDto;
 import org.example.store.mapper.product.ProductMapper;
-import org.example.store.repository.product.CategoryRepository;
 import org.example.store.repository.product.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class ProductServiceImpl extends GenericItemServiceImpl<Product, ProductResponseDto> implements ProductService {
+
+    private static Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private ProductRepository productRepository;
     private ProductMapper productMapper;
@@ -32,6 +34,8 @@ public class ProductServiceImpl extends GenericItemServiceImpl<Product, ProductR
 
     @Override
     public List<ProductResponseDto> findByDepartmentAndCategory(String departmentName, String categoryName) {
+        logger.finest(() -> "Fetch products by department=" + departmentName + " & category=" + categoryName);
+
         Optional<DepartmentDto> department = departmentName == null
                 ? Optional.empty()
                 : departmentService.findByName(departmentName);

@@ -5,18 +5,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import org.example.logger.LoggerFactory;
 import org.example.server.util.Pair;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class RestServer {
+
+    private static Logger logger = LoggerFactory.getLogger(RestServer.class);
+
     private HttpServer server;
     private ObjectMapper mapper;
+    private int port;
     Map<String, Map<HttpMethod, Function<RestExchange, Object>>> handlers;
 
     /**
@@ -32,6 +39,7 @@ public class RestServer {
      * @param port the port to use
      */
     public RestServer(int port) throws IOException {
+        this.port = port;
         this.server = HttpServer.create(new InetSocketAddress(port), 0);
         this.init();
     }
@@ -51,22 +59,36 @@ public class RestServer {
         handlers.forEach((context, handlers) -> {
             HttpContext httpContext = this.server.createContext(context);
             httpContext.setHandler(exchange -> {
-                RestExchange restExchange = new RestExchange(exchange, mapper);
-                Function<RestExchange, Object> handler = handlers.get(restExchange.getMethod());
+                try {
+                    RestExchange restExchange = new RestExchange(exchange, mapper);
+                    Function<RestExchange, Object> handler = handlers.get(restExchange.getMethod());
 
-                if (handler == null) {
-                    exchange.sendResponseHeaders(HttpStatus.METHOD_NOT_ALLOWED, 0);
-                    exchange.close();
-                    return;
+                    if (handler == null) {
+                        exchange.sendResponseHeaders(HttpStatus.METHOD_NOT_ALLOWED, 0);
+                        exchange.close();
+                        return;
+                    }
+
+
+                    String body = restExchange.getBody();
+                    logger.finest(() -> ">> Req: " + restExchange);
+                    if (body != null && !body.isEmpty()) logger.finest(restExchange::getBody);
+
+                    Object response = handler.apply(restExchange);
+                    writeResponseBody(exchange, response);
+
+                    logger.finest("<< Res: " + response);
+                } catch (Exception e) {
+                    logger.severe(() -> e.getMessage() + "\n"
+                            + Arrays.stream(e.getStackTrace())
+                            .map(Objects::toString)
+                            .collect(Collectors.joining("\n")));
                 }
-
-                Object response = handler.apply(restExchange);
-
-                writeResponseBody(exchange, response);
             });
         });
 
         this.server.start();
+        logger.info("Server starting at " + port);
     }
 
     /**
@@ -85,6 +107,7 @@ public class RestServer {
     }
 
     private RestServer addHandler(HttpMethod method, String context, Function<RestExchange, Object> handler) {
+        logger.info("Mapping " + method + " " + context);
         getOrPutHandler(context).put(method, handler);
         return this;
     }

@@ -8,8 +8,7 @@ import org.example.store.repository.product.DepartmentRepository;
 public class DepartmentServiceImpl extends GenericItemServiceImpl<Department, DepartmentDto>
         implements DepartmentService {
 
-    public DepartmentServiceImpl(DepartmentRepository repository,
-                                    DepartmentMapper mapper) {
+    public DepartmentServiceImpl(DepartmentRepository repository, DepartmentMapper mapper) {
         super(repository, mapper);
     }
 }

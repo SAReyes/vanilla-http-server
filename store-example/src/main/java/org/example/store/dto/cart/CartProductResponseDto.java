@@ -58,4 +58,15 @@ public class CartProductResponseDto {
     public void setCategories(List<CategoryDto> categories) {
         this.categories = categories;
     }
+
+    @Override
+    public String toString() {
+        return "CartProductResponseDto{" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", name='" + name + '\'' +
+                ", departments=" + departments +
+                ", categories=" + categories +
+                '}';
+    }
 }

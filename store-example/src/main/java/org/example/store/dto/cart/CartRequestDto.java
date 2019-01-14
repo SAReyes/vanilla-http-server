@@ -18,4 +18,11 @@ public class CartRequestDto {
     public void setProducts(List<CartProductRequestDto> products) {
         this.products = products;
     }
+
+    @Override
+    public String toString() {
+        return "CartRequestDto{" +
+                "products=" + products +
+                '}';
+    }
 }
