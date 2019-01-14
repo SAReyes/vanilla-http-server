@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Vanilla java 8 http server example
-  version: 0.1.0
+  version: "1.0.0"
   title: Product store
 tags:
   - name: product
@@ -234,3 +234,7 @@ components:
           type: integer
         name:
           type: string
+
+servers:
+  - description: Heroku
+    url: https://vanilla-store-example.herokuapp.com

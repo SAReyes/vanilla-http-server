@@ -9,6 +9,7 @@ import org.example.store.domain.product.Category;
 import org.example.store.domain.product.Department;
 import org.example.store.domain.product.Product;
 import org.example.store.handler.CartHandler;
+import org.example.store.handler.HomeHandler;
 import org.example.store.handler.ProductHandler;
 import org.example.store.mapper.cart.CartMapper;
 import org.example.store.mapper.product.CategoryMapper;
@@ -82,6 +83,7 @@ public class Config {
             }
         });
 
-        return new ProductStore(productHandler, cartHandler);
+        HomeHandler homeHandler = new HomeHandler();
+        return new ProductStore(homeHandler, productHandler, cartHandler);
     }
 }
