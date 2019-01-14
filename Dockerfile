@@ -6,5 +6,5 @@ RUN ./mvnw clean package -DskipTests
 FROM openjdk:8-jre-alpine
 COPY --from=builder /opt/store/store-example/target/*-dependencies.jar /app/app.jar
 WORKDIR /app
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+EXPOSE "${PORT:-8080}"
+CMD ["java", "-jar", "app.jar"]

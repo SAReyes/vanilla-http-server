@@ -21,7 +21,7 @@ public class Entrypoint {
                 .register(NotFoundException.class, e -> HttpResponse.NOT_FOUND)
                 .register(BadRequestException.class, e -> HttpResponse.BAD_REQUEST);
 
-        new RestServer()
+        new RestServer(Integer.valueOf(System.getenv().getOrDefault("PORT", "8080")))
                 .setErrorHandlers(errorHandlers)
                 .nest("/product", get(store.getProductHandler()::get))
                 .nest(
