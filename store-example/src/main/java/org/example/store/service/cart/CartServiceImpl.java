@@ -63,10 +63,10 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Optional<CartResponseDto> delete(Long id, CartRequestDto request) {
-        logger.finest(() -> "Delete products from cart " + id + " - " + request);
+    public Optional<CartResponseDto> deleteProducts(Long id, List<Long> products) {
+        logger.finest(() -> "Delete products from cart " + id + " - " +products);
 
-        return cartRepository.deleteProductsFromCart(id, getProductsIds(request))
+        return cartRepository.deleteProductsFromCart(id, products)
                 .map(cart -> cartMapper.toDto(cart));
     }
 

@@ -10,7 +10,7 @@ public interface CartService {
     CartResponseDto create(CartRequestDto request);
     Optional<CartResponseDto> find(Long id);
     Optional<CartResponseDto> addProductsToCart(Long id, CartRequestDto request);
-    Optional<CartResponseDto> delete(Long id, CartRequestDto request);
+    Optional<CartResponseDto> deleteProducts(Long id, List<Long> products);
     boolean delete(Long id);
     List<CartResponseDto> findAll();
 }

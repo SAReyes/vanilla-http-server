@@ -12,11 +12,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -176,7 +175,7 @@ public class CartServiceTest {
         given(repository.deleteProductsFromCart(any(), any())).willReturn(Optional.of(domain));
         given(mapper.toDto(any())).willReturn(responseDto);
 
-        Optional<CartResponseDto> result = sut.delete(1L, requestDto);
+        Optional<CartResponseDto> result = sut.deleteProducts(1L, emptyList());
 
         assertThat(result).contains(responseDto);
     }
@@ -185,25 +184,16 @@ public class CartServiceTest {
     public void when_no_cart_is_found_should_return_an_empty_optional() {
         given(repository.deleteProductsFromCart(any(), any())).willReturn(Optional.empty());
 
-        Optional<CartResponseDto> result = sut.delete(1L, requestDto);
+        Optional<CartResponseDto> result = sut.deleteProducts(1L, emptyList());
 
         assertThat(result).isEmpty();
     }
 
     @Test
     public void deleting_products_from_a_cart_should_use_the_repository() {
-        CartProductRequestDto p1 = new CartProductRequestDto();
-        p1.setId(2L);
-        p1.setQuantity(1L);
-        CartProductRequestDto p2 = new CartProductRequestDto();
-        p2.setId(3L);
-        p2.setQuantity(2L);
-        requestDto.setProducts(asList(p1, p2));
-        domain.setId(1L);
-
         given(repository.deleteProductsFromCart(any(), any())).willReturn(Optional.of(domain));
 
-        sut.delete(1L, requestDto);
+        sut.deleteProducts(1L, asList(2L, 3L, 3L));
 
         verify(repository).deleteProductsFromCart(1L, asList(2L, 3L, 3L));
     }
@@ -214,7 +204,7 @@ public class CartServiceTest {
 
         verify(repository).delete(1L);
     }
-    
+
     @Test
     public void deleting_a_cart_should_return_a_success_boolean() {
         given(repository.delete(any())).willReturn(true);

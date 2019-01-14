@@ -15,6 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Optional;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -123,7 +124,7 @@ public class CartHandlerTest {
     }
 
     @Test
-    public void saving_an_item_in_a_cart_when_the_cart_is_not_found_should_rasie_not_found_exception(){
+    public void saving_an_item_in_a_cart_when_the_cart_is_not_found_should_rasie_not_found_exception() {
         given(exchange.getPath()).willReturn("/cart/1");
         given(service.addProductsToCart(any(), any())).willReturn(Optional.empty());
 
@@ -132,9 +133,8 @@ public class CartHandlerTest {
 
     @Test
     public void should_delete_products_from_an_existing_cart() {
-        given(exchange.getPath()).willReturn("/cart/1");
-        given(exchange.getBody(CartRequestDto.class)).willReturn(requestDto);
-        given(service.delete(any(), any())).willReturn(Optional.of(responseDto));
+        given(exchange.getPath()).willReturn("/cart/1/items/1,2");
+        given(service.deleteProducts(any(), any())).willReturn(Optional.of(responseDto));
 
         Object result = sut.delete(exchange);
 
@@ -143,21 +143,18 @@ public class CartHandlerTest {
 
     @Test
     public void deleting_items_from_a_cart_should_use_the_service() {
-        given(exchange.getPath()).willReturn("/cart/1");
-        given(exchange.getBody(CartRequestDto.class)).willReturn(requestDto);
-        given(service.delete(any(), any())).willReturn(Optional.of(responseDto));
+        given(exchange.getPath()).willReturn("/cart/1/items/1,2");
+        given(service.deleteProducts(any(), any())).willReturn(Optional.of(responseDto));
 
         sut.delete(exchange);
 
-        verify(service).delete(1L, requestDto);
+        verify(service).deleteProducts(1L, asList(1L, 2L));
     }
 
     @Test
     public void deleting_request_without_products_should_delete_the_cart() {
-        requestDto.setProducts(emptyList());
         given(exchange.getPath()).willReturn("/cart/1");
-        given(exchange.getBody(CartRequestDto.class)).willReturn(requestDto);
-        given(service.delete(any(), any())).willReturn(Optional.of(responseDto));
+        given(service.delete(any())).willReturn(true);
 
         sut.delete(exchange);
 
@@ -168,7 +165,7 @@ public class CartHandlerTest {
     public void deleting_items_from_a_cart_when_the_cart_does_not_exist_should_raise_not_found_exception() {
         given(exchange.getPath()).willReturn("/cart/1");
         given(exchange.getBody(CartRequestDto.class)).willReturn(requestDto);
-        given(service.delete(any(), any())).willReturn(Optional.empty());
+        given(service.deleteProducts(any(), any())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> sut.delete(exchange)).isInstanceOf(NotFoundException.class);
     }
