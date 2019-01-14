@@ -21,9 +21,9 @@
         </plugins>
     </build>
     <modules>
+        <module>logger</module>
         <module>server</module>
         <module>store-example</module>
-        <module>logger</module>
     </modules>
 
     <properties>
@@ -39,12 +39,12 @@
             <dependency>
                 <groupId>org.example</groupId>
                 <artifactId>server</artifactId>
-                <version>${version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.example</groupId>
                 <artifactId>logger</artifactId>
-                <version>${version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
