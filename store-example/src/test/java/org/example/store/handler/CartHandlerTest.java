@@ -1,11 +1,11 @@
 package org.example.store.handler;
 
+import org.example.server.RestExchange;
 import org.example.store.dto.cart.CartProductRequestDto;
 import org.example.store.dto.cart.CartRequestDto;
 import org.example.store.dto.cart.CartResponseDto;
 import org.example.store.dto.exception.BadRequestException;
 import org.example.store.dto.exception.NotFoundException;
-import org.example.server.RestExchange;
 import org.example.store.service.cart.CartService;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +13,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -56,6 +56,16 @@ public class CartHandlerTest {
         sut.get(exchange);
 
         verify(service).find(1L);
+    }
+
+    @Test
+    public void should_use_the_service_to_retrieve_all_carts() {
+        given(exchange.getPath()).willReturn("/cart/");
+        given(service.findAll()).willReturn(singletonList(responseDto));
+
+        sut.get(exchange);
+
+        verify(service).findAll();
     }
 
     @Test

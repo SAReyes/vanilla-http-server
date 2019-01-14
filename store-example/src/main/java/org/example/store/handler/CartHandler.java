@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CartHandler {
-    private static final String PATH = "/cart/(.*)|/cart/?";
+    private static final String PATH = "/cart/(.*)";
 
     private Pattern idPatter;
     private CartService service;
@@ -52,6 +52,8 @@ public class CartHandler {
     public Object get(RestExchange exchange) {
         Optional<Long> cartId = getCartId(exchange.getPath());
 
+        if (!cartId.isPresent()) return service.findAll();
+
         return cartId
                 .map(id -> service.find(id).orElseThrow(() -> new NotFoundException("404"))) // TODO: Exception handling
                 .get();
@@ -62,7 +64,7 @@ public class CartHandler {
 
         try {
             if (matcher.find()) {
-                return matcher.group(1) == null
+                return matcher.group(1) == null || matcher.group(1).isEmpty()
                         ? Optional.empty()
                         : Optional.of(Long.valueOf(matcher.group(1)));
             } else {

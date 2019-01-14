@@ -27,6 +27,7 @@
     {
       "id": 1,
       "name": "apple",
+      "price": 0.5,
       "departments": [
         1,
         2
@@ -38,6 +39,7 @@
     {
       "id": 2,
       "name": "banana",
+      "price": 1.0,
       "departments": [
         1
       ],
@@ -48,6 +50,7 @@
     {
       "id": 3,
       "name": "shampoo",
+      "price": 1.5,
       "departments": [
         3
       ],

@@ -74,6 +74,7 @@ public class CartProductResponseDto {
                 "id=" + id +
                 ", quantity=" + quantity +
                 ", name='" + name + '\'' +
+                ", price=" + price +
                 ", departments=" + departments +
                 ", categories=" + categories +
                 '}';

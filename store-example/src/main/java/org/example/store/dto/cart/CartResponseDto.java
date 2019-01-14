@@ -6,7 +6,6 @@ import java.util.List;
 public class CartResponseDto {
 
     private Long id;
-    private Double totalPrice;
     private List<CartProductResponseDto> products;
 
     public CartResponseDto() {

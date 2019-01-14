@@ -3,6 +3,7 @@ package org.example.store.service.cart;
 import org.example.store.dto.cart.CartRequestDto;
 import org.example.store.dto.cart.CartResponseDto;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CartService {
@@ -11,4 +12,5 @@ public interface CartService {
     Optional<CartResponseDto> addProductsToCart(Long id, CartRequestDto request);
     Optional<CartResponseDto> delete(Long id, CartRequestDto request);
     boolean delete(Long id);
+    List<CartResponseDto> findAll();
 }

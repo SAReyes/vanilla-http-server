@@ -10,8 +10,9 @@ import org.example.store.repository.cart.CartRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+
+import static java.util.stream.Collectors.toList;
 
 public class CartServiceImpl implements CartService {
 
@@ -45,6 +46,15 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public List<CartResponseDto> findAll(){
+        logger.finest(() -> "Find all carts");
+
+        return cartRepository.findAll().stream()
+                .map(cart -> cartMapper.toDto(cart))
+                .collect(toList());
+    }
+
+    @Override
     public Optional<CartResponseDto> addProductsToCart(Long id, CartRequestDto request) {
         logger.finest(() -> "Add products to cart " + id + " - " + request);
 
@@ -74,6 +84,6 @@ public class CartServiceImpl implements CartService {
                                 .map(it -> product.getId())
                 )
                 .boxed()
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

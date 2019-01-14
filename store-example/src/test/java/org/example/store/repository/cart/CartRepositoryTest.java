@@ -44,6 +44,13 @@ public class CartRepositoryTest {
     }
 
     @Test
+    public void should_find_all_carts() {
+        List<Cart> result = sut.findAll();
+
+        assertThat(result).containsExactly(foo, bar);
+    }
+
+    @Test
     public void should_return_empty_optional_if_the_id_is_not_found() {
         Optional<Cart> result = sut.find(3L);
 

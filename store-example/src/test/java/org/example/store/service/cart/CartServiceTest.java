@@ -12,9 +12,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -94,6 +96,13 @@ public class CartServiceTest {
         sut.find(1L);
 
         verify(mapper).toDto(domain);
+    }
+
+    @Test
+    public void finding_all_carts_should_use_the_service() {
+        sut.findAll();
+
+        verify(repository).findAll();
     }
 
     @Test

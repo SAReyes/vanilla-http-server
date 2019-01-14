@@ -24,6 +24,11 @@ public class CartRepositoryImpl implements CartRepository {
     }
 
     @Override
+    public List<Cart> findAll() {
+        return repository;
+    }
+
+    @Override
     public Cart saveNew(Cart cart) {
         cart.setId(getNextId());
 
