@@ -19,7 +19,7 @@ public class ProductHandler {
 
         if (name != null) {
             return service.findByName(name)
-                    .orElseThrow(() -> new NotFoundException("404")); // TODO: Error handling
+                    .orElseThrow(() -> new NotFoundException("404"));
         }
 
         return service.findByDepartmentAndCategory(departmentName, categoryName);

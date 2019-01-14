@@ -41,7 +41,7 @@ public class CartHandler {
                 .map(
                         id ->
                                 service.deleteProducts(id, pathVariables.getProducts())
-                                        .orElseThrow(() -> new NotFoundException("404")) // TODO: Exception handling
+                                        .orElseThrow(() -> new NotFoundException("404"))
                 )
                 .get();
     }
@@ -53,7 +53,7 @@ public class CartHandler {
         return pathVariables.getCartId()
                 .map(
                         id -> service.addProductsToCart(id, request)
-                                .orElseThrow(() -> new NotFoundException("404")) // TODO: Exception handling
+                                .orElseThrow(() -> new NotFoundException("404"))
                 )
                 .orElseGet(() -> service.create(request));
     }
@@ -64,7 +64,7 @@ public class CartHandler {
         if (!pathVariables.getCartId().isPresent()) return service.findAll();
 
         return pathVariables.getCartId()
-                .map(id -> service.find(id).orElseThrow(() -> new NotFoundException("404"))) // TODO: Exception handling
+                .map(id -> service.find(id).orElseThrow(() -> new NotFoundException("404")))
                 .get();
     }
 

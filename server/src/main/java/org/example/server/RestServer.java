@@ -6,6 +6,7 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import org.example.logger.LoggerFactory;
+import org.example.server.error.RestServerErrorHandlers;
 import org.example.server.util.Pair;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class RestServer {
     private HttpServer server;
     private ObjectMapper mapper;
     private int port;
+    private RestServerErrorHandlers errorHandlers;
     Map<String, Map<HttpMethod, Function<RestExchange, Object>>> handlers;
 
     /**
@@ -72,7 +74,18 @@ public class RestServer {
                     logger.finest(() -> ">> Req: " + restExchange);
                     if (body != null && !body.isEmpty()) logger.finest(restExchange::getBody);
 
-                    Object response = handler.apply(restExchange);
+                    Object response;
+                    try {
+                        response = handler.apply(restExchange);
+                    } catch (Exception e) {
+                        Function errorHandler = errorHandlers.getHandler(e.getClass());
+                        if (errorHandler == null) {
+                            response = HttpResponse.INTERNAL_SERVER_ERROR;
+                            logError(e);
+                        } else {
+                            response = errorHandler.apply(e);
+                        }
+                    }
 
                     if (response instanceof HttpResponse) {
                         writeResponseBody(exchange, (HttpResponse) response);
@@ -83,10 +96,7 @@ public class RestServer {
 
                     logger.finest("<< Res: " + response);
                 } catch (Exception e) {
-                    logger.severe(() -> e.getClass().getCanonicalName() + " - " + e.getMessage() + "\n"
-                            + Arrays.stream(e.getStackTrace())
-                            .map(Objects::toString)
-                            .collect(Collectors.joining("\n")));
+                    logError(e);
                 }
             });
         });
@@ -108,6 +118,26 @@ public class RestServer {
             addHandler(handler.getFirst(), context, handler.getSecond());
         }
         return this;
+    }
+
+    /**
+     * Set error handlers for this server
+     *
+     * @param errorHandlers handlers
+     * @return this
+     */
+    public RestServer setErrorHandlers(RestServerErrorHandlers errorHandlers) {
+        logger.finest("Setting error handlers");
+        this.errorHandlers = errorHandlers;
+        return this;
+    }
+
+
+    private void logError(Exception e) {
+        logger.severe(() -> e.getClass().getCanonicalName() + " - " + e.getMessage() + "\n"
+                + Arrays.stream(e.getStackTrace())
+                .map(Objects::toString)
+                .collect(Collectors.joining("\n")));
     }
 
     private RestServer addHandler(HttpMethod method, String context, Function<RestExchange, Object> handler) {
