@@ -1,5 +1,6 @@
 package org.example.store.handler;
 
+import org.example.server.HttpResponse;
 import org.example.store.dto.cart.CartPathRequestDto;
 import org.example.store.dto.cart.CartProductRequestDto;
 import org.example.store.dto.cart.CartRequestDto;
@@ -33,7 +34,7 @@ public class CartHandler {
 
         if (pathVariables.getCartId().isPresent()
                 && pathVariables.getProducts().isEmpty() && service.delete(pathVariables.getCartId().get())) {
-            return "OK"; // TODO: body-less messages
+            return HttpResponse.OK;
         }
 
         return pathVariables.getCartId()
@@ -81,9 +82,6 @@ public class CartHandler {
                             .collect(toList()));
                 }
 
-//                return matcher.group(1) == null || matcher.group(1).isEmpty()
-//                        ? Optional.empty()
-//                        : Optional.of(Long.valueOf(matcher.group(1)));
                 return request;
             } else {
                 return new CartPathRequestDto();

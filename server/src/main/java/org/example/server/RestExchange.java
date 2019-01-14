@@ -36,7 +36,11 @@ public class RestExchange {
     }
 
     public HttpMethod getMethod() {
-        return HttpMethod.valueOf(exchange.getRequestMethod());
+        try {
+            return HttpMethod.valueOf(exchange.getRequestMethod());
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
     }
 
     private Map<String, String> splitQuery(URI uri) {

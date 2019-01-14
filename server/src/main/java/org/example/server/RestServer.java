@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -64,22 +63,27 @@ public class RestServer {
                     Function<RestExchange, Object> handler = handlers.get(restExchange.getMethod());
 
                     if (handler == null) {
-                        exchange.sendResponseHeaders(HttpStatus.METHOD_NOT_ALLOWED, 0);
+                        exchange.sendResponseHeaders(HttpResponse.METHOD_NOT_ALLOWED.getStatus(), 0);
                         exchange.close();
                         return;
                     }
-
 
                     String body = restExchange.getBody();
                     logger.finest(() -> ">> Req: " + restExchange);
                     if (body != null && !body.isEmpty()) logger.finest(restExchange::getBody);
 
                     Object response = handler.apply(restExchange);
-                    writeResponseBody(exchange, response);
+
+                    if (response instanceof HttpResponse) {
+                        writeResponseBody(exchange, (HttpResponse) response);
+                    } else {
+                        writeResponseBody(exchange, response);
+                    }
+
 
                     logger.finest("<< Res: " + response);
                 } catch (Exception e) {
-                    logger.severe(() -> e.getMessage() + "\n"
+                    logger.severe(() -> e.getClass().getCanonicalName() + " - " + e.getMessage() + "\n"
                             + Arrays.stream(e.getStackTrace())
                             .map(Objects::toString)
                             .collect(Collectors.joining("\n")));
@@ -121,10 +125,18 @@ public class RestServer {
         return handlersMap;
     }
 
+    private void writeResponseBody(HttpExchange exchange, HttpResponse response) throws IOException {
+        String responseString = response.getMessage();
+        exchange.sendResponseHeaders(response.getStatus(), responseString.getBytes().length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(responseString.getBytes());
+        os.close();
+    }
+
     private void writeResponseBody(HttpExchange exchange, Object response) throws IOException {
         String jsonResponse = mapper.writeValueAsString(response);
         exchange.getResponseHeaders().set("Content-Type", "Application/json");
-        exchange.sendResponseHeaders(HttpStatus.OK, jsonResponse.getBytes().length);
+        exchange.sendResponseHeaders(HttpResponse.OK.getStatus(), jsonResponse.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(jsonResponse.getBytes());
         os.close();
