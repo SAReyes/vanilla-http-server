@@ -4,12 +4,21 @@ jdk: openjdk8
 services:
   - docker
 
-script: 
+script:
   - ./mvnw clean test
 
-deploy:
-  provider: script
-  script: bash docker_push
-  on:
-    branch: master
 
+deploy:
+  - provider: script
+    script:
+      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+      docker build -t $DOCKER_IMAGE .;
+      docker push $DOCKER_IMAGE
+    on:
+      branch: master
+  - provider: heroku
+    app: vanilla-store-example
+    api_key:
+      secure: "Vxa6iORfH42fsBstHVFYwIl2ptmllHx/XBx6X9Itk6x60cfNwvZcpxSSZsc7C8dzjnbVPIjhhzPL/alxaJckPqOskyu7Oy0jZiThEtAMcTOHsx59sO8XWTcoHz3ls1b6G6t4Q6eM3l2wSakeR0dl+5wiN6kG6tJrWtRjv/uQ6dCByBHmRrvcGrWeY7esyA9Y3FG0ZEhktm8V8ygFVXZOvTFJYr/FnqytEzBTZ6iBv3dJnpTueE7t4GvDZF//nHDsQ7qwVuUKkj5Y/BilNlFCm6KmylOezT6h/BDzX/rzGUfnVCqK/mEhaliW5Db+4Z/mFUnAe0koMVdHCdBbD+z9fo0VpnoofvdOQhROA0N5qDsQLoqcDCBX7LLMb0bj9SWNIAfU4K4E9pYz3WWMeBg/UtPROHCCUrgxGMKo7DLM7rLTHtsVDxQHZjEWaAua1R6LmCMmY3KDZ0eBmUU7hCUSk1/m+50mg/ey5qR9lKbG4UgW9wtQD+7tO53exXJEBnoCplX5JzDpBmVTJHA9JNWDkdJDzpkSsphXG3I8F9lh8YHBvYoqe/tx2GLICoMgAeCJZIaKWYTBJc82YdnSDfoaElCH2HntxEKJ/vWMTInQzTHyQwYCP+q+9Bhtto7IQ2YIS8d7TC5ucPK2nDukiADi0i62DfKAeHi0tRL79ImC1P0="
+    on:
+      branch: master
