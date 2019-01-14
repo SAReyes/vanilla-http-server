@@ -47,6 +47,7 @@ public class ProductMapper extends GenericItemMapper<Product, ProductResponseDto
                 .map(Optional::get)
                 .collect(Collectors.toList());
 
+        dto.setPrice(product.getPrice());
         dto.setDepartments(departments);
         dto.setCategories(categories);
 
@@ -62,6 +63,7 @@ public class ProductMapper extends GenericItemMapper<Product, ProductResponseDto
     public Product toDomain(ProductResponseDto product) {
         Product domain = super.toDomain(product);
 
+        domain.setPrice(product.getPrice());
         domain.setDepartments(
                 product.getDepartments().stream().map(GenericItemDto::getId).collect(Collectors.toList())
         );

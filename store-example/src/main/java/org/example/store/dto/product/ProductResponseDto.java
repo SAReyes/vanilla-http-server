@@ -5,12 +5,21 @@ import java.util.List;
 
 public class ProductResponseDto extends GenericItemDto {
 
+    private Double price;
     private List<DepartmentDto> departments;
     private List<CategoryDto> categories;
 
     public ProductResponseDto() {
         departments = new ArrayList<>();
         categories = new ArrayList<>();
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public List<DepartmentDto> getDepartments() {

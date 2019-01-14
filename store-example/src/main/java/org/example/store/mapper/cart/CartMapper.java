@@ -43,6 +43,7 @@ public class CartMapper {
 
                     responseDto.setId(product.getId());
                     responseDto.setName(product.getName());
+                    responseDto.setPrice(product.getPrice());
                     responseDto.setCategories(product.getCategories());
                     responseDto.setDepartments(product.getDepartments());
                     responseDto.setQuantity(it.getValue());

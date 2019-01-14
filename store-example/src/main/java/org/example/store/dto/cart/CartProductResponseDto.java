@@ -11,6 +11,7 @@ public class CartProductResponseDto {
     private Long id;
     private Long quantity;
     private String name;
+    private Double price;
     private List<DepartmentDto> departments;
     private List<CategoryDto> categories;
 
@@ -41,6 +42,14 @@ public class CartProductResponseDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Double getPrice() {
+        return price;
     }
 
     public List<DepartmentDto> getDepartments() {

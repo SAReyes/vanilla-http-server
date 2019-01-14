@@ -1,0 +1,236 @@
+openapi: 3.0.0
+info:
+  description: Vanilla java 8 http server example
+  version: 0.1.0
+  title: Product store
+tags:
+  - name: product
+  - name: cart
+paths:
+  /products:
+    get:
+      tags:
+        - product
+      summary: List all products with filters
+      parameters:
+        - name: name
+          in: query
+          description: Find a product by its name
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Filter products by a given category
+          required: false
+          schema:
+            type: string
+        - name: department
+          in: query
+          description: Filter products by a given department
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductResponse'
+  /cart:
+    get:
+      tags:
+        - cart
+      summary: List all carts
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CartResponse'
+    post:
+      tags:
+        - cart
+      summary: Create a new cart
+      requestBody:
+        description: Products to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponse'
+        400:
+          description: Bad request - the id could not be parsed
+  /cart/{cartId}:
+    get:
+      tags:
+        - cart
+      summary: List the products from a given cart
+      parameters:
+        - name: cartId
+          in: path
+          description: The cart id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponse'
+        400:
+          description: Bad request - the id could not be parsed
+        404:
+          description: Cart not found
+    post:
+      tags:
+        - cart
+      summary: Add products to a cart
+      parameters:
+        - name: cartId
+          in: path
+          description: The cart id to add products to
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Products to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponse'
+        400:
+          description: Bad request - the id could not be parsed
+        404:
+          description: Cart not found
+    delete:
+      tags:
+        - cart
+      summary: Delete a cart
+      parameters:
+        - name: cartId
+          in: path
+          description: The cart id to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad request - the id could not be parsed
+        404:
+          description: Cart not found
+  /cart/{cartId}/items/{items}:
+    delete:
+      tags:
+        - cart
+      summary: Delete items from a cart
+      parameters:
+        - name: cartId
+          in: path
+          description: The cart id to delete items from
+          required: true
+          schema:
+            type: string
+        - name: items
+          in: path
+          description: The item ids to remove, ids separated by commas
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponse'
+        400:
+          description: Bad request - the id could not be parsed
+        404:
+          description: Cart not found
+components:
+  schemas:
+    ProductResponse:
+      allOf:
+        - $ref: '#/components/schemas/GenericItem'
+        - properties:
+            price:
+              type: number
+              format: double
+            departments:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/GenericItem'
+            categories:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/GenericItem'
+    CartRequest:
+      properties:
+        products:
+          properties:
+            id:
+              type: integer
+            quantity:
+              type: integer
+    CartResponse:
+      properties:
+        id:
+          type: integer
+        totalPrice:
+          type: number
+          format: double
+        products:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/GenericItem'
+              - properties:
+                  quantity:
+                    type: integer
+                  price:
+                    type: number
+                    format: double
+                  departments:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/GenericItem'
+                  categories:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/GenericItem'
+    GenericItem:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string

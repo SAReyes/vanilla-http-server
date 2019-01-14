@@ -6,6 +6,7 @@ import java.util.List;
 public class CartResponseDto {
 
     private Long id;
+    private Double totalPrice;
     private List<CartProductResponseDto> products;
 
     public CartResponseDto() {
@@ -18,6 +19,12 @@ public class CartResponseDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Double getTotalPrice() {
+        return products.stream()
+                .mapToDouble(products -> products.getPrice() * products.getQuantity())
+                .sum();
     }
 
     public List<CartProductResponseDto> getProducts() {
